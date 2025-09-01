@@ -6,23 +6,10 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * TextAnalyzer - A program to analyze text files and provide statistical insights
- * 
- * Features:
- * - Counts total words (excluding filtered words)
- * - Finds top 5 most frequent words
- * - Lists unique words alphabetically
- * - Filters out common words (articles, prepositions, pronouns, conjunctions, modal verbs)
- * 
- * Author: Text Analysis System
- * Estimated Development Time: 2 hours
- */
-public class TextAnalyzer {
+ class TextAnalyzer {
     
-    // Predefined list of words to exclude from analysis
     private static final Set<String> EXCLUDED_WORDS = new HashSet<>(Arrays.asList(
-        // Articles
+        
         "the", "a", "an",
         
         // Prepositions
@@ -68,9 +55,7 @@ public class TextAnalyzer {
         this.processedWords = 0;
     }
     
-    /**
-     * Analyzes text from a file URL
-     */
+    
     public void analyzeFromUrl(String urlString) throws IOException {
         long startTime = System.currentTimeMillis();
         
@@ -96,9 +81,7 @@ public class TextAnalyzer {
         return commonSWords.contains(word);
     }
     
-    /**
-     * Analyzes text from a local file
-     */
+    
     public void analyzeFromFile(String filename) throws IOException {
         long startTime = System.currentTimeMillis();
         
@@ -113,15 +96,12 @@ public class TextAnalyzer {
         System.out.println("Analysis completed in " + processingTimeMs + " ms");
     }
     
-    /**
-     * Analyzes text from a BufferedReader
-     */
+    
     private void analyzeText(BufferedReader reader) throws IOException {
         String line;
         Pattern wordPattern = Pattern.compile("[a-zA-Z]+");
         
         while ((line = reader.readLine()) != null) {
-            // Extract words using regex (only letters)
             String[] words = wordPattern.matcher(line.toLowerCase())
                     .results()
                     .map(match -> match.group())
@@ -144,9 +124,7 @@ public class TextAnalyzer {
         }
     }
     
-    /**
-     * Gets the top N most frequent words
-     */
+   
     public List<Map.Entry<String, Integer>> getTopWords(int n) {
         return wordFrequency.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
@@ -154,9 +132,7 @@ public class TextAnalyzer {
                 .collect(Collectors.toList());
     }
     
-    /**
-     * Gets all unique words sorted alphabetically
-     */
+    
     public List<String> getUniqueWordsSorted(int limit) {
         return wordFrequency.keySet().stream()
                 .sorted()
@@ -164,9 +140,7 @@ public class TextAnalyzer {
                 .collect(Collectors.toList());
     }
     
-    /**
-     * Prints comprehensive analysis results
-     */
+    
     public void printResults() {
         System.out.println("\n" + "=".repeat(60));
         System.out.println("ANALYSIS RESULTS");
@@ -200,41 +174,25 @@ public class TextAnalyzer {
         if (sortedWords.size() % 5 != 0) System.out.println();
     }
     
-    /**
-     * Saves results to a file
-     */
+  
     public void saveResults(String filename) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
-            // Redirect System.out to file temporarily
             PrintStream originalOut = System.out;
             System.setOut(new PrintStream(new FileOutputStream(filename)));
             
             printResults();
             
-            // Restore System.out
             System.setOut(originalOut);
             System.out.println("Results saved to: " + filename);
         }
     }
     
-    /**
-     * Main method - Entry point of the program
-     */
+   
     public static void main(String[] args) {
         TextAnalyzer analyzer = new TextAnalyzer();
         
         try {
-//             You can analyze from URL (if accessible)
              analyzer.analyzeFromUrl("https://courses.cs.washington.edu/courses/cse390c/22sp/lectures/moby.txt");
-            
-            // Or analyze from local file
-            // analyzer.analyzeFromFile("moby.txt");
-            
-            // Demo with sample text for testing
-            System.out.println("DEMO MODE - Analyzing sample text");
-            analyzeSampleText(analyzer);
-            
-            // Print results to console
             analyzer.printResults();
             
             // Save results to file
@@ -244,34 +202,5 @@ public class TextAnalyzer {
             System.err.println("Error during analysis: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-    
-    /**
-     * Demo method with sample text for testing
-     */
-    private static void analyzeSampleText(TextAnalyzer analyzer) throws IOException {
-    	String sampleText = 
-                "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money " +
-                "in my purse, and nothing particular to interest me on shore, I thought I would sail about " +
-                "a little and see the watery part of the world. It is a way I have of driving off the spleen " +
-                "and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever " +
-                "it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before " +
-                "coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever " +
-                "my hypos get such an upper hand of me, that it requires a strong moral principle to prevent " +
-                "me from deliberately stepping into the street, and methodically knocking people's hats off— " +
-                "then, I account it high time to get to sea as soon as possible. This is my substitute for " +
-                "pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly " +
-                "take to the ship. There is nothing surprising in this. If they but knew it, almost all men " +
-                "in their degree, some time or other, cherish very nearly the same feelings towards the ocean " +
-                "with me. The whale! The whale! A vast creature of the deep, whale whale whale, swimming " +
-                "through the endless ocean waters. Captain Ahab and his crew sail across the seas in search " +
-                "of the great white whale. Moby Dick, the legendary whale, eludes capture time and again. " +
-                "The ship's crew works tirelessly, whale watching, whale hunting, always seeking the whale.";
-        
-        try (BufferedReader reader = new BufferedReader(new StringReader(sampleText))) {
-            analyzer.analyzeText(reader);
-        }
-        
-        analyzer.processingTimeMs = 5; // Simulated processing time for demo
     }
 }
